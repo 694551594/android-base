@@ -49,7 +49,7 @@ public abstract class BaseActivity extends SwipeBackActivity implements
 
     }
 
-    private void restoreInstanceState(Bundle savedInstanceState) {
+    protected void restoreInstanceState(Bundle savedInstanceState) {
         mFragmentHelper.restoreInstanceState(savedInstanceState);
     }
 
@@ -123,10 +123,6 @@ public abstract class BaseActivity extends SwipeBackActivity implements
         return true;
     }
 
-    protected int getToolbarLayoutId() {
-        return R.layout.toolbar;
-    }
-
     /**
      * 如果返回false，证明不需要toolbar
      *
@@ -142,8 +138,7 @@ public abstract class BaseActivity extends SwipeBackActivity implements
 
     @Override
     public void setContentView(int layoutResId) {
-        int toolbarResId = this.getToolbarLayoutId();
-        ToolBarHelper toolBarHelper = new ToolBarHelper(this, layoutResId, toolbarResId);
+        ToolBarHelper toolBarHelper = new ToolBarHelper(this, layoutResId, R.layout.toolbar);
         mToolbar = toolBarHelper.getToolBar();
         if (onCreateToolbar(mToolbar)) {
             setSupportActionBar(mToolbar);

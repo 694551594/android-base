@@ -30,4 +30,12 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <style name="TabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabMinWidth">80dp</item>
+        <item name="tabTextAppearance">@style/TabTextAppearance</item>
+    </style>
+
+    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+    </style>
+
 </resources>

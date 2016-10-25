@@ -74,7 +74,9 @@ public abstract class BaseFragment extends Fragment implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mFragmentHelper.saveInstanceState(outState);
+        if (mFragmentHelper != null) {
+            mFragmentHelper.saveInstanceState(outState);
+        }
     }
 
     public FragmentHelper getFragmentHelper() {

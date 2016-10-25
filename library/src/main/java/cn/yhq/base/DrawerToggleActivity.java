@@ -12,10 +12,8 @@ public abstract class DrawerToggleActivity extends BaseActivity {
     private DrawerLayout mDrawerLayout;
     private int mDrawerGravity;
 
-    @Override
-    protected void onViewCreated() {
-        super.onViewCreated();
-        mDrawerLayout = getDrawerLayout();
+    public void setDrawerLayout(DrawerLayout drawerLayout) {
+        this.mDrawerLayout = drawerLayout;
         if (mDrawerLayout != null) {
             mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, this.getToolbar(),
                     R.string.open, R.string.close);
@@ -23,8 +21,6 @@ public abstract class DrawerToggleActivity extends BaseActivity {
             mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
         }
     }
-
-    protected abstract DrawerLayout getDrawerLayout();
 
     public void closeDrawer() {
         mDrawerLayout.closeDrawer(mDrawerGravity);

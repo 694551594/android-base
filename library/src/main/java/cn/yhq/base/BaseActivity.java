@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -52,6 +53,10 @@ public abstract class BaseActivity extends SwipeBackActivity implements
         mFragmentHelper.restoreInstanceState(savedInstanceState);
     }
 
+    public <T extends View> T getView(int id) {
+        return (T) this.findViewById(id);
+    }
+
     public void setFragmentContainer(int fragmentContainerId) {
         mFragmentHelper = FragmentHelper.setup(this, fragmentContainerId);
         mFragmentHelper.setOnFragmentChangeListener(this);
@@ -83,7 +88,9 @@ public abstract class BaseActivity extends SwipeBackActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mFragmentHelper.saveInstanceState(outState);
+        if (mFragmentHelper != null) {
+            mFragmentHelper.saveInstanceState(outState);
+        }
     }
 
     public FragmentHelper getFragmentHelper() {

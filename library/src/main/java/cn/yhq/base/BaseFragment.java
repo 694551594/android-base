@@ -48,8 +48,6 @@ public abstract class BaseFragment extends Fragment implements
         mFragmentHelper.setOnFragmentChangeListener(this);
     }
 
-    protected abstract int getFragmentContainerId();
-
     public <T extends Fragment> T addFragment(Class<T> fragment, Bundle args) {
         return mFragmentHelper.addFragment(fragment, args);
     }
@@ -89,11 +87,13 @@ public abstract class BaseFragment extends Fragment implements
     }
 
     protected boolean onBackPressedFragment() {
-        FragmentHelper.TabInfo tabInfo = this.mFragmentHelper.getLastTabInfo();
-        if (tabInfo != null && tabInfo.getFragment() instanceof BaseFragment) {
-            BaseFragment baseFragment = (BaseFragment) tabInfo.getFragment();
-            if (!baseFragment.onBackPressedFragment()) {
-                return false;
+        if (this.mFragmentHelper != null) {
+            FragmentHelper.TabInfo tabInfo = this.mFragmentHelper.getLastTabInfo();
+            if (tabInfo != null && tabInfo.getFragment() instanceof BaseFragment) {
+                BaseFragment baseFragment = (BaseFragment) tabInfo.getFragment();
+                if (!baseFragment.onBackPressedFragment()) {
+                    return false;
+                }
             }
         }
         return true;

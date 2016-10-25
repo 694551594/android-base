@@ -14,11 +14,14 @@ public abstract class DrawerToggleActivity extends BaseActivity {
 
     @Override
     protected void onViewCreated() {
-        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, this.getToolbar(),
-                R.string.open, R.string.close);
-        mActionBarDrawerToggle.syncState();
+        super.onViewCreated();
         mDrawerLayout = getDrawerLayout();
-        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+        if (mDrawerLayout != null) {
+            mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, this.getToolbar(),
+                    R.string.open, R.string.close);
+            mActionBarDrawerToggle.syncState();
+            mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+        }
     }
 
     protected abstract DrawerLayout getDrawerLayout();
@@ -34,9 +37,11 @@ public abstract class DrawerToggleActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(this.mDrawerGravity)) {
-            mDrawerLayout.closeDrawer(this.mDrawerGravity);
-            return;
+        if (mDrawerLayout != null) {
+            if (mDrawerLayout.isDrawerOpen(this.mDrawerGravity)) {
+                mDrawerLayout.closeDrawer(this.mDrawerGravity);
+                return;
+            }
         }
         super.onBackPressed();
     }

@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,6 +25,7 @@ public abstract class BaseActivity extends SwipeBackActivity implements IDialogC
     private ValidateManager mValidateManager;
     private DialogManager mDialogManager;
     private ActivityManager mActivityManager;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,45 @@ public abstract class BaseActivity extends SwipeBackActivity implements IDialogC
         this.onViewCreated();
     }
 
+    protected int getToolbarLayoutId() {
+        return R.layout.toolbar;
+    }
+
+    /**
+     * 如果返回false，证明不需要toolbar
+     *
+     * @param toolbar
+     * @return
+     */
+    protected boolean onCreateToolbar(Toolbar toolbar) {
+        if (!TextUtils.isEmpty(this.getTitle())) {
+            toolbar.setTitle(this.getTitle());
+        }
+        return true;
+    }
+
+    @Override
+    public void setContentView(int layoutResId) {
+        int toolbarResId = this.getToolbarLayoutId();
+        ToolBarHelper toolBarHelper = new ToolBarHelper(this, layoutResId, toolbarResId);
+        mToolbar = toolBarHelper.getToolBar();
+        if (onCreateToolbar(mToolbar)) {
+            setSupportActionBar(mToolbar);
+            setContentView(toolBarHelper.getContentView());
+        } else {
+            super.setContentView(layoutResId);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onDestroy() {
         this.mActivityManager.removeActivity(this);
@@ -42,7 +85,7 @@ public abstract class BaseActivity extends SwipeBackActivity implements IDialogC
 
     protected abstract int getContentViewLayoutId();
 
-    protected abstract int onViewCreated();
+    protected abstract void onViewCreated();
 
     public boolean validate() {
         return mValidateManager.validate();

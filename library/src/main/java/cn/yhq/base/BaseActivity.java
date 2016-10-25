@@ -13,7 +13,6 @@ import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
 import cn.yhq.validate.ValidateManager;
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 /**
  * Created by Yanghuiqiang on 2016/10/25.
@@ -225,6 +224,10 @@ public abstract class BaseActivity extends SwipeBackActivity implements IDialogC
 
         });
 
+    }
+
+    public void setSwipeBackEnable(boolean enable) {
+        this.getSwipeBackLayout().setEnableGesture(enable);
     }
 
 }

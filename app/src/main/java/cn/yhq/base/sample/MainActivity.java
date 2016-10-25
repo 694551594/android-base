@@ -20,6 +20,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onViewCreated() {
         this.getSupportActionBar().setTitle("标题");
-        this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        //this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 }

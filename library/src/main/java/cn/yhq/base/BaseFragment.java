@@ -43,6 +43,10 @@ public abstract class BaseFragment extends Fragment implements
         mFragmentHelper.restoreInstanceState(savedInstanceState);
     }
 
+    public <T extends View> T getView(View view, int id) {
+        return (T) view.findViewById(id);
+    }
+
     public void setFragmentContainer(int fragmentContainerId) {
         mFragmentHelper = FragmentHelper.setup(this, fragmentContainerId);
         mFragmentHelper.setOnFragmentChangeListener(this);

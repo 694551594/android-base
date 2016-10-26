@@ -1,16 +1,15 @@
 package cn.yhq.base.sample;
 
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
-import cn.yhq.base.DrawerToggleActivity;
+import cn.yhq.base.BaseActivity;
 
 
-public class MainActivity extends DrawerToggleActivity {
+public class MainActivity extends BaseActivity {
     private Button mButton;
-    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,16 +19,20 @@ public class MainActivity extends DrawerToggleActivity {
 
     @Override
     protected int getContentViewLayoutId() {
-        return R.layout.activity_drawer;
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected boolean onCreateToolbar(Toolbar toolbar) {
+        return super.onCreateToolbar(toolbar);
     }
 
     @Override
     protected void onViewCreated() {
         super.onViewCreated();
-        this.getSupportActionBar().setTitle("首页");
+        this.setTitle("首页");
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.mButton = this.getView(R.id.button);
-        this.mDrawerLayout = this.getView(R.id.main_drawerlayout);
-        this.setDrawerLayout(mDrawerLayout);
         this.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

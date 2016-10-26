@@ -21,8 +21,8 @@ public class SampleActivity1 extends BaseActivity {
     }
 
     @Override
-    protected void onViewCreated() {
-        super.onViewCreated();
+    protected void onViewCreated(Bundle savedInstanceState) {
+        super.onViewCreated(savedInstanceState);
         this.setTitle("第二个界面");
         this.setFragmentContainer(R.id.main_fragment_container);
         this.addFragment(SampleFragment.class);

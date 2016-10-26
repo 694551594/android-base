@@ -22,8 +22,8 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onViewCreated() {
-        super.onViewCreated();
+    protected void onViewCreated(Bundle savedInstanceState) {
+        super.onViewCreated(savedInstanceState);
         this.setTitle("首页");
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.mButton = this.getView(R.id.button);

@@ -39,7 +39,7 @@ public abstract class BaseActivity extends SwipeBackActivity implements
         this.mActivityManager = ActivityManager.getInstance();
         this.mActivityManager.addActivity(this);
         this.mDialogManager = new DialogManager(this);
-        this.onViewCreated();
+        this.onViewCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
             restoreInstanceState(savedInstanceState);
@@ -211,7 +211,7 @@ public abstract class BaseActivity extends SwipeBackActivity implements
 
     protected abstract int getContentViewLayoutId();
 
-    protected void onViewCreated() {
+    protected void onViewCreated(Bundle savedInstanceState) {
 
     }
 

@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
  * Created by Yanghuiqiang on 2016/10/26.
  */
 
-public class ToolbarManager {
+public final class ToolbarManager {
     private static int[] ATTRS = {R.attr.windowActionBarOverlay, R.attr.actionBarSize};
     private Context mContext;
     private View mToolbarView;

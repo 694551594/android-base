@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import cn.yhq.dialog.core.DialogManager;
@@ -25,8 +27,10 @@ public abstract class BaseActivity extends SwipeBackActivity implements
         FragmentHelper.OnFragmentChangeListener {
     private DialogManager mDialogManager;
     private ActivityManager mActivityManager;
+    private ToolbarManager mToolbarManager;
     private Toolbar mToolbar;
     private FragmentHelper mFragmentHelper;
+    private boolean isToolbarWrapper = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +107,17 @@ public abstract class BaseActivity extends SwipeBackActivity implements
     @Override
     public void setTitle(CharSequence title) {
         super.setTitle(title);
-        this.getSupportActionBar().setTitle(title);
+        if (this.getSupportActionBar() != null) {
+            this.getSupportActionBar().setTitle(title);
+        }
     }
 
     @Override
     public void setTitle(int titleId) {
         super.setTitle(titleId);
-        this.getSupportActionBar().setTitle(titleId);
+        if (this.getSupportActionBar() != null) {
+            this.getSupportActionBar().setTitle(titleId);
+        }
     }
 
     @Override
@@ -133,28 +141,52 @@ public abstract class BaseActivity extends SwipeBackActivity implements
         return true;
     }
 
-    /**
-     * 如果返回false，证明不需要toolbar
-     *
-     * @param toolbar
-     * @return
-     */
-    protected boolean onCreateToolbar(Toolbar toolbar) {
+    protected void onCreateToolbar(Toolbar toolbar) {
         if (!TextUtils.isEmpty(this.getTitle())) {
             toolbar.setTitle(this.getTitle());
         }
-        return true;
+    }
+
+    public void setToolbarWrapper(boolean isToolbarWrapper) {
+        this.isToolbarWrapper = isToolbarWrapper;
+    }
+
+    private void wrapperToolbar(View view) {
+        mToolbarManager = ToolbarManager.Builder.builder(this)
+                .setLayoutView(view)
+                .setToolbar(R.layout.toolbar)
+                .build();
+        mToolbar = mToolbarManager.getToolBar();
+        onCreateToolbar(mToolbar);
+        setSupportActionBar(mToolbar);
+        super.setContentView(mToolbarManager.getContentView());
     }
 
     @Override
     public void setContentView(int layoutResId) {
-        ToolBarHelper toolBarHelper = new ToolBarHelper(this, layoutResId, R.layout.toolbar);
-        mToolbar = toolBarHelper.getToolBar();
-        if (onCreateToolbar(mToolbar)) {
-            setSupportActionBar(mToolbar);
-            setContentView(toolBarHelper.getContentView());
+        if (isToolbarWrapper) {
+            View view = LayoutInflater.from(this).inflate(layoutResId, null, false);
+            wrapperToolbar(view);
         } else {
             super.setContentView(layoutResId);
+        }
+    }
+
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        if (isToolbarWrapper) {
+            wrapperToolbar(view);
+        } else {
+            super.setContentView(view, params);
+        }
+    }
+
+    @Override
+    public void setContentView(View view) {
+        if (isToolbarWrapper) {
+            wrapperToolbar(view);
+        } else {
+            super.setContentView(view);
         }
     }
 
@@ -201,22 +233,22 @@ public abstract class BaseActivity extends SwipeBackActivity implements
     }
 
     public void startActivityForResult(Class<?> activity, Bundle bundle, int requestCode) {
-        Intent intent = getIntent(activity, bundle);
+        Intent intent = createIntent(activity, bundle);
         this.startActivityForResult(intent, requestCode);
     }
 
     public void startActivityForResult(Class<?> activity, int requestCode) {
-        Intent intent = getIntent(activity);
+        Intent intent = createIntent(activity);
         this.startActivityForResult(intent, requestCode);
     }
 
     public void startActivity(Class<?> activity, Bundle bundle) {
-        Intent intent = getIntent(activity, bundle);
+        Intent intent = createIntent(activity, bundle);
         this.startActivity(intent);
     }
 
     public void startActivity(Class<?> activity) {
-        Intent intent = getIntent(activity);
+        Intent intent = createIntent(activity);
         this.startActivity(intent);
     }
 
@@ -233,13 +265,13 @@ public abstract class BaseActivity extends SwipeBackActivity implements
         callbackOnActivityResult(Activity.RESULT_OK, data);
     }
 
-    public Intent getIntent(Class<?> activity, Bundle bundle) {
+    public Intent createIntent(Class<?> activity, Bundle bundle) {
         Intent intent = new Intent(this, activity);
         intent.putExtras(bundle);
         return intent;
     }
 
-    public Intent getIntent(Class<?> activity) {
+    public Intent createIntent(Class<?> activity) {
         Intent intent = new Intent(this, activity);
         return intent;
     }

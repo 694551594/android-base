@@ -1,7 +1,6 @@
 package cn.yhq.base.sample;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
@@ -20,11 +19,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected int getContentViewLayoutId() {
         return R.layout.activity_main;
-    }
-
-    @Override
-    protected boolean onCreateToolbar(Toolbar toolbar) {
-        return super.onCreateToolbar(toolbar);
     }
 
     @Override

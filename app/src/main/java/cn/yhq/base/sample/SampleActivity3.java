@@ -11,6 +11,7 @@ public class SampleActivity3 extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.setSwipeBackWrapper(false);
         super.onCreate(savedInstanceState);
     }
 
@@ -23,7 +24,6 @@ public class SampleActivity3 extends BaseActivity {
     protected void onViewCreated(Bundle savedInstanceState) {
         super.onViewCreated(savedInstanceState);
         this.setTitle("第三个界面");
-        //this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         this.mButton = this.getView(R.id.button);
         this.mButton.setOnClickListener(new View.OnClickListener() {
             @Override

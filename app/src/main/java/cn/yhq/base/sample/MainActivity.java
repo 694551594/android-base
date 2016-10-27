@@ -8,10 +8,12 @@ import cn.yhq.base.BaseActivity;
 
 
 public class MainActivity extends BaseActivity {
-    private Button mButton;
+    private Button mButton1;
+    private Button mButton2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.setSwipeBackWrapper(false);
         super.onCreate(savedInstanceState);
     }
 
@@ -25,8 +27,16 @@ public class MainActivity extends BaseActivity {
         super.onViewCreated(savedInstanceState);
         this.setTitle("首页");
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        this.mButton = this.getView(R.id.button);
-        this.mButton.setOnClickListener(new View.OnClickListener() {
+        this.mButton1 = this.getView(R.id.button1);
+        this.mButton2 = this.getView(R.id.button2);
+        this.mButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(SampleActivity1.class);
+
+            }
+        });
+        this.mButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(SampleActivity2.class);

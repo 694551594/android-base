@@ -7,7 +7,12 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="AppTheme" parent="AppBaseTheme"></style>
+    <style name="AppTheme" parent="AppBaseTheme">
+    </style>
+
+    <style name="NoTranslucentTheme" parent="@style/AppTheme">
+        <item name="android:windowIsTranslucent">false</item>
+    </style>
 
     <style name="ToolbarStyle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:layout_height">?attr/actionBarSize</item>
@@ -18,16 +23,6 @@
         <item name="contentInsetStartWithNavigation">-16dp</item>
         <item name="navigationIcon">?attr/homeAsUpIndicator</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-    </style>
-
-    <!-- 最底层的activity背景设置为不透明，否则每次侧滑返回的时候都会显示桌面 -->
-    <style name="MainActivityTheme" parent="@style/AppTheme">
-        <item name="android:windowIsTranslucent">false</item>
-    </style>
-
-    <style name="TransparentTheme" parent="@style/AppTheme">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
 </resources>

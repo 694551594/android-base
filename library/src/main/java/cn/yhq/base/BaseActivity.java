@@ -20,6 +20,10 @@ import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
 import cn.yhq.fragment.FragmentHelper;
+import me.imid.swipebacklayout.lib.SwipeBackLayout;
+import me.imid.swipebacklayout.lib.Utils;
+import me.imid.swipebacklayout.lib.app.SwipeBackActivityBase;
+import me.imid.swipebacklayout.lib.app.SwipeBackActivityHelper;
 
 /**
  * Created by Yanghuiqiang on 2016/10/25.
@@ -27,17 +31,24 @@ import cn.yhq.fragment.FragmentHelper;
 
 public abstract class BaseActivity extends AppCompatActivity implements
         IDialogCreator,
-        FragmentHelper.OnFragmentChangeListener {
+        FragmentHelper.OnFragmentChangeListener,
+        SwipeBackActivityBase {
     private DialogManager mDialogManager;
     private ActivityManager mActivityManager;
     private ToolbarManager mToolbarManager;
     private Toolbar mToolbar;
     private FragmentHelper mFragmentHelper;
     private boolean isToolbarWrapper = true;
+    private boolean isSwipeBackWrapper = true;
+    private SwipeBackActivityHelper mHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (isSwipeBackWrapper) {
+            mHelper = new SwipeBackActivityHelper(this);
+            mHelper.onActivityCreate();
+        }
         this.setContentView(getContentViewLayoutId());
         this.mActivityManager = ActivityManager.getInstance();
         this.mActivityManager.addActivity(this);
@@ -54,6 +65,49 @@ public abstract class BaseActivity extends AppCompatActivity implements
         if (mFragmentHelper != null) {
             mFragmentHelper.restoreInstanceState(savedInstanceState);
         }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (mHelper != null) {
+            mHelper.onPostCreate();
+        }
+    }
+
+    @Override
+    public View findViewById(int id) {
+        View v = super.findViewById(id);
+        if (v == null && mHelper != null)
+            return mHelper.findViewById(id);
+        return v;
+    }
+
+    @Override
+    public SwipeBackLayout getSwipeBackLayout() {
+        if (mHelper != null) {
+            return mHelper.getSwipeBackLayout();
+        }
+        return null;
+    }
+
+    @Override
+    public void setSwipeBackEnable(boolean enable) {
+        if (mHelper != null) {
+            getSwipeBackLayout().setEnableGesture(enable);
+        }
+    }
+
+    @Override
+    public void scrollToFinishActivity() {
+        if (mHelper != null) {
+            Utils.convertActivityToTranslucent(this);
+            getSwipeBackLayout().scrollToFinishActivity();
+        }
+    }
+
+    public void setSwipeBackWrapper(boolean isSwipeBackWrapper) {
+        this.isSwipeBackWrapper = isSwipeBackWrapper;
     }
 
     public <T extends View> T getView(int id) {

@@ -34,7 +34,9 @@ public abstract class BaseFragment extends Fragment implements
     }
 
     private void restoreInstanceState(Bundle savedInstanceState) {
-        mFragmentHelper.restoreInstanceState(savedInstanceState);
+        if (mFragmentHelper != null) {
+            mFragmentHelper.restoreInstanceState(savedInstanceState);
+        }
     }
 
     public <T extends View> T getView(View view, int id) {

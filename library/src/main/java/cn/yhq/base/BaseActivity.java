@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -22,7 +25,7 @@ import cn.yhq.fragment.FragmentHelper;
  * Created by Yanghuiqiang on 2016/10/25.
  */
 
-public abstract class BaseActivity extends SwipeBackActivity implements
+public abstract class BaseActivity extends AppCompatActivity implements
         IDialogCreator,
         FragmentHelper.OnFragmentChangeListener {
     private DialogManager mDialogManager;
@@ -48,7 +51,9 @@ public abstract class BaseActivity extends SwipeBackActivity implements
     }
 
     protected void restoreInstanceState(Bundle savedInstanceState) {
-        mFragmentHelper.restoreInstanceState(savedInstanceState);
+        if (mFragmentHelper != null) {
+            mFragmentHelper.restoreInstanceState(savedInstanceState);
+        }
     }
 
     public <T extends View> T getView(int id) {
@@ -233,23 +238,37 @@ public abstract class BaseActivity extends SwipeBackActivity implements
     }
 
     public void startActivityForResult(Class<?> activity, Bundle bundle, int requestCode) {
-        Intent intent = createIntent(activity, bundle);
-        this.startActivityForResult(intent, requestCode);
+        Intent intent = createIntent(activity);
+        ActivityCompat.startActivityForResult(this, intent, requestCode, bundle);
     }
 
     public void startActivityForResult(Class<?> activity, int requestCode) {
-        Intent intent = createIntent(activity);
-        this.startActivityForResult(intent, requestCode);
+        startActivityForResult(activity, null, requestCode);
     }
 
     public void startActivity(Class<?> activity, Bundle bundle) {
-        Intent intent = createIntent(activity, bundle);
-        this.startActivity(intent);
+        Intent intent = createIntent(activity);
+        ActivityCompat.startActivity(this, intent, bundle);
     }
 
     public void startActivity(Class<?> activity) {
-        Intent intent = createIntent(activity);
-        this.startActivity(intent);
+        startActivity(activity, null);
+    }
+
+    public void startSharedElementActivity(Class<?> activity, View sharedElement, String sharedElementName) {
+        ActivityCompat.startActivity(
+                this,
+                createIntent(activity),
+                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        this,
+                        sharedElement,
+                        sharedElementName
+                ).toBundle()
+        );
+    }
+
+    public void finishSharedElementActivity() {
+        ActivityCompat.finishAfterTransition(this);
     }
 
     protected void callbackOnActivityResult(int resultCode, Intent data) {
@@ -304,10 +323,6 @@ public abstract class BaseActivity extends SwipeBackActivity implements
 
         });
 
-    }
-
-    public void setSwipeBackEnable(boolean enable) {
-        this.getSwipeBackLayout().setEnableGesture(enable);
     }
 
 }

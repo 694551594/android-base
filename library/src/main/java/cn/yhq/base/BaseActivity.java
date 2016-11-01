@@ -16,6 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
@@ -40,14 +44,15 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private FragmentHelper mFragmentHelper;
     private boolean isToolbarWrapper = true;
     private boolean isSwipeBackWrapper = true;
-    private SwipeBackActivityHelper mHelper;
+    private boolean isEventBusEnable = false;
+    private SwipeBackActivityHelper mSwipeBackActivityHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (isSwipeBackWrapper) {
-            mHelper = new SwipeBackActivityHelper(this);
-            mHelper.onActivityCreate();
+            mSwipeBackActivityHelper = new SwipeBackActivityHelper(this);
+            mSwipeBackActivityHelper.onActivityCreate();
         }
         this.setContentView(getContentViewLayoutId());
         this.mActivityManager = ActivityManager.getInstance();
@@ -56,51 +61,98 @@ public abstract class BaseActivity extends AppCompatActivity implements
         this.onViewCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-            restoreInstanceState(savedInstanceState);
+            if (mFragmentHelper != null) {
+                mFragmentHelper.restoreInstanceState(savedInstanceState);
+            }
         }
 
     }
 
-    protected void restoreInstanceState(Bundle savedInstanceState) {
-        if (mFragmentHelper != null) {
-            mFragmentHelper.restoreInstanceState(savedInstanceState);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleMainThreadMessage(MessageEvent event) {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void handlePostingMessage(MessageEvent event) {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void handleAsyncMessage(MessageEvent event) {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void handleBackgroundMessage(MessageEvent event) {
+
+    }
+
+    public void sendMessageEvent(MessageEvent event) {
+        EventBus.getDefault().post(event);
+    }
+
+    public void sendMessageEvent(int what, Object obj) {
+        MessageEvent event = new MessageEvent();
+        event.what = what;
+        event.obj = obj;
+        EventBus.getDefault().post(event);
+    }
+
+    public void setEventBusEnable(boolean isEventBusEnable) {
+        this.isEventBusEnable = isEventBusEnable;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (isEventBusEnable) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isEventBusEnable) {
+            EventBus.getDefault().unregister(this);
         }
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if (mHelper != null) {
-            mHelper.onPostCreate();
+        if (mSwipeBackActivityHelper != null) {
+            mSwipeBackActivityHelper.onPostCreate();
         }
     }
 
     @Override
     public View findViewById(int id) {
         View v = super.findViewById(id);
-        if (v == null && mHelper != null)
-            return mHelper.findViewById(id);
+        if (v == null && mSwipeBackActivityHelper != null)
+            return mSwipeBackActivityHelper.findViewById(id);
         return v;
     }
 
     @Override
     public SwipeBackLayout getSwipeBackLayout() {
-        if (mHelper != null) {
-            return mHelper.getSwipeBackLayout();
+        if (mSwipeBackActivityHelper != null) {
+            return mSwipeBackActivityHelper.getSwipeBackLayout();
         }
         return null;
     }
 
     @Override
     public void setSwipeBackEnable(boolean enable) {
-        if (mHelper != null) {
+        if (mSwipeBackActivityHelper != null) {
             getSwipeBackLayout().setEnableGesture(enable);
         }
     }
 
     @Override
     public void scrollToFinishActivity() {
-        if (mHelper != null) {
+        if (mSwipeBackActivityHelper != null) {
             Utils.convertActivityToTranslucent(this);
             getSwipeBackLayout().scrollToFinishActivity();
         }

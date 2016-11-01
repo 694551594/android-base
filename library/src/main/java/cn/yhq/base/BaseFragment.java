@@ -29,13 +29,9 @@ public abstract class BaseFragment extends Fragment implements
         this.mDialogManager = new DialogManager(this);
 
         if (savedInstanceState != null) {
-            restoreInstanceState(savedInstanceState);
-        }
-    }
-
-    private void restoreInstanceState(Bundle savedInstanceState) {
-        if (mFragmentHelper != null) {
-            mFragmentHelper.restoreInstanceState(savedInstanceState);
+            if (mFragmentHelper != null) {
+				mFragmentHelper.restoreInstanceState(savedInstanceState);
+			}
         }
     }
 

@@ -6,8 +6,7 @@ android {
     buildToolsVersion '23.0.3'
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 23
+    targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 
@@ -40,7 +39,7 @@ publish {
     userOrg = '694551594'
     groupId = 'cn.yhq'
     artifactId = 'android-base'
-    publishVersion = '1.0.0'
+    publishVersion = '1.1.0'
     desc = 'android-BaseActivity、BaseFragment'
     website = 'https://github.com/694551594/android-base'
 }

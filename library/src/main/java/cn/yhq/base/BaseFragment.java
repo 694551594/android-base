@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
@@ -22,6 +26,7 @@ public abstract class BaseFragment extends Fragment implements
         FragmentHelper.OnFragmentChangeListener {
     private DialogManager mDialogManager;
     private FragmentHelper mFragmentHelper;
+    private boolean isEventBusEnable = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,8 +35,59 @@ public abstract class BaseFragment extends Fragment implements
 
         if (savedInstanceState != null) {
             if (mFragmentHelper != null) {
-				mFragmentHelper.restoreInstanceState(savedInstanceState);
-			}
+                mFragmentHelper.restoreInstanceState(savedInstanceState);
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleMainThreadMessage(MessageEvent event) {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void handlePostingMessage(MessageEvent event) {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void handleAsyncMessage(MessageEvent event) {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void handleBackgroundMessage(MessageEvent event) {
+
+    }
+
+    public void sendMessageEvent(MessageEvent event) {
+        EventBus.getDefault().post(event);
+    }
+
+    public void sendMessageEvent(int what, Object obj) {
+        MessageEvent event = new MessageEvent();
+        event.what = what;
+        event.obj = obj;
+        EventBus.getDefault().post(event);
+    }
+
+    public void setEventBusEnable(boolean isEventBusEnable) {
+        this.isEventBusEnable = isEventBusEnable;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (isEventBusEnable) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (isEventBusEnable) {
+            EventBus.getDefault().unregister(this);
         }
     }
 

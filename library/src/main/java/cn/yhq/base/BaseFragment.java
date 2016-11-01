@@ -42,21 +42,29 @@ public abstract class BaseFragment extends Fragment implements
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleMainThreadMessage(MessageEvent event) {
-
+        event.threadMode = ThreadMode.MAIN;
+        handleMessage(event);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void handlePostingMessage(MessageEvent event) {
-
+        event.threadMode = ThreadMode.POSTING;
+        handleMessage(event);
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void handleAsyncMessage(MessageEvent event) {
-
+        event.threadMode = ThreadMode.ASYNC;
+        handleMessage(event);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void handleBackgroundMessage(MessageEvent event) {
+        event.threadMode = ThreadMode.BACKGROUND;
+        handleMessage(event);
+    }
+
+    public void handleMessage(MessageEvent event) {
 
     }
 

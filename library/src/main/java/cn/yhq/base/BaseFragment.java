@@ -26,11 +26,28 @@ public abstract class BaseFragment extends Fragment implements
         FragmentHelper.OnFragmentChangeListener {
     private DialogManager mDialogManager;
     private FragmentHelper mFragmentHelper;
-    private boolean isEventBusEnable = false;
+    private Config mConfig = new Config();
+
+    public static class Config {
+        private boolean isEventBusEnable = false;
+
+        public Config setEventBusEnable(boolean eventBusEnable) {
+            isEventBusEnable = eventBusEnable;
+            return this;
+        }
+
+    }
+
+    protected void onConfig(Config config) {
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        onConfig(mConfig);
+
         this.mDialogManager = new DialogManager(this);
 
         if (savedInstanceState != null) {
@@ -79,14 +96,10 @@ public abstract class BaseFragment extends Fragment implements
         EventBus.getDefault().post(event);
     }
 
-    public void setEventBusEnable(boolean isEventBusEnable) {
-        this.isEventBusEnable = isEventBusEnable;
-    }
-
     @Override
     public void onStart() {
         super.onStart();
-        if (isEventBusEnable) {
+        if (mConfig.isEventBusEnable) {
             EventBus.getDefault().register(this);
         }
     }
@@ -94,7 +107,7 @@ public abstract class BaseFragment extends Fragment implements
     @Override
     public void onStop() {
         super.onStop();
-        if (isEventBusEnable) {
+        if (mConfig.isEventBusEnable) {
             EventBus.getDefault().unregister(this);
         }
     }

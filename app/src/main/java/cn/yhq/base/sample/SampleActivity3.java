@@ -10,9 +10,9 @@ public class SampleActivity3 extends BaseActivity {
     private View mButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        this.setSwipeBackWrapper(false);
-        super.onCreate(savedInstanceState);
+    protected void onConfig(Config config) {
+        super.onConfig(config);
+        config.setSwipeBackWrapper(false);
     }
 
     @Override

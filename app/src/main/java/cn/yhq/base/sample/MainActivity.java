@@ -15,9 +15,10 @@ public class MainActivity extends BaseActivity {
     private Button mButton4;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        this.setSwipeBackWrapper(false);
-        super.onCreate(savedInstanceState);
+    protected void onConfig(Config config) {
+        super.onConfig(config);
+        config.setSwipeBackWrapper(false);
+        config.setEventBusEnable(true);
     }
 
     @Override

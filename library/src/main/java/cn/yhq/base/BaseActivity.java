@@ -42,15 +42,39 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private ToolbarManager mToolbarManager;
     private Toolbar mToolbar;
     private FragmentHelper mFragmentHelper;
-    private boolean isToolbarWrapper = true;
-    private boolean isSwipeBackWrapper = true;
-    private boolean isEventBusEnable = false;
+    private Config mConfig = new Config();
     private SwipeBackActivityHelper mSwipeBackActivityHelper;
+
+    public static class Config {
+        private boolean isToolbarWrapper = true;
+        private boolean isSwipeBackWrapper = true;
+        private boolean isEventBusEnable = false;
+
+        public Config setToolbarWrapper(boolean toolbarWrapper) {
+            isToolbarWrapper = toolbarWrapper;
+            return this;
+        }
+
+        public Config setEventBusEnable(boolean eventBusEnable) {
+            isEventBusEnable = eventBusEnable;
+            return this;
+        }
+
+        public Config setSwipeBackWrapper(boolean swipeBackWrapper) {
+            isSwipeBackWrapper = swipeBackWrapper;
+            return this;
+        }
+    }
+
+    protected void onConfig(Config config) {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (isSwipeBackWrapper) {
+        this.onConfig(mConfig);
+        if (mConfig.isSwipeBackWrapper) {
             mSwipeBackActivityHelper = new SwipeBackActivityHelper(this);
             mSwipeBackActivityHelper.onActivityCreate();
         }
@@ -107,14 +131,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
         EventBus.getDefault().post(event);
     }
 
-    public void setEventBusEnable(boolean isEventBusEnable) {
-        this.isEventBusEnable = isEventBusEnable;
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
-        if (isEventBusEnable) {
+        if (mConfig.isEventBusEnable) {
             EventBus.getDefault().register(this);
         }
     }
@@ -122,7 +142,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        if (isEventBusEnable) {
+        if (mConfig.isEventBusEnable) {
             EventBus.getDefault().unregister(this);
         }
     }
@@ -164,10 +184,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
             Utils.convertActivityToTranslucent(this);
             getSwipeBackLayout().scrollToFinishActivity();
         }
-    }
-
-    public void setSwipeBackWrapper(boolean isSwipeBackWrapper) {
-        this.isSwipeBackWrapper = isSwipeBackWrapper;
     }
 
     public <T extends View> T getView(int id) {
@@ -266,10 +282,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         }
     }
 
-    public void setToolbarWrapper(boolean isToolbarWrapper) {
-        this.isToolbarWrapper = isToolbarWrapper;
-    }
-
     private void wrapperToolbar(View view) {
         mToolbarManager = ToolbarManager.Builder.builder(this)
                 .setLayoutView(view)
@@ -283,7 +295,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public void setContentView(int layoutResId) {
-        if (isToolbarWrapper) {
+        if (mConfig.isToolbarWrapper) {
             View view = LayoutInflater.from(this).inflate(layoutResId, null, false);
             wrapperToolbar(view);
         } else {
@@ -293,7 +305,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
-        if (isToolbarWrapper) {
+        if (mConfig.isToolbarWrapper) {
             wrapperToolbar(view);
         } else {
             super.setContentView(view, params);
@@ -302,7 +314,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public void setContentView(View view) {
-        if (isToolbarWrapper) {
+        if (mConfig.isToolbarWrapper) {
             wrapperToolbar(view);
         } else {
             super.setContentView(view);

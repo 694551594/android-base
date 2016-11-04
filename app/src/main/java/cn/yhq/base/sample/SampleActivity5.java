@@ -24,7 +24,6 @@ public class SampleActivity5 extends BaseActivity {
     protected void onViewCreated(Bundle savedInstanceState) {
         super.onViewCreated(savedInstanceState);
         this.setTitle("EventBus");
-        this.setEventBusEnable(true);
         this.mButton = this.getView(R.id.button);
         this.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,5 +37,11 @@ public class SampleActivity5 extends BaseActivity {
     public void handleMainThreadMessage(MessageEvent event) {
         super.handleMainThreadMessage(event);
         this.showToast("当前界面" + event.obj.toString());
+    }
+
+    @Override
+    protected void onConfig(Config config) {
+        super.onConfig(config);
+        config.setEventBusEnable(true);
     }
 }

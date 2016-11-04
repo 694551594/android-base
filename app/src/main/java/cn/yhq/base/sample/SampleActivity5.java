@@ -28,7 +28,7 @@ public class SampleActivity5 extends BaseActivity {
         this.mButton = this.getView(R.id.button);
         this.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
-3             public void onClick(View v) {
+            public void onClick(View v) {
                 sendMessageEvent(1, "接收到了一个消息");
             }
         });

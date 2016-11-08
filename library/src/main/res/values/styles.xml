@@ -1,16 +1,16 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="XBaseTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="AppTheme" parent="AppBaseTheme">
+    <style name="AppXTheme" parent="XBaseTheme">
     </style>
 
-    <style name="NoTranslucentTheme" parent="@style/AppTheme">
+    <style name="NoTranslucentTheme" parent="@style/AppXTheme">
         <item name="android:windowIsTranslucent">false</item>
     </style>
 

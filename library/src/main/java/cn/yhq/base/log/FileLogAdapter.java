@@ -29,7 +29,7 @@ public class FileLogAdapter implements LogAdapter {
         OutputStream outputStream = null;
         OutputStreamWriter outputStreamWriter = null;
         try {
-            outputStream = new FileOutputStream(mLogFile);
+            outputStream = new FileOutputStream(mLogFile, true);
             outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
             outputStreamWriter.write(msg);
             outputStreamWriter.flush();

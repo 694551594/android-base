@@ -19,9 +19,6 @@ public class BaseApplication extends Application {
         super.onCreate();
         // 异常处理
         CustomActivityOnCrash.install(this);
-        if (!BuildConfig.DEBUG) {
-            CustomActivityOnCrash.setShowErrorDetails(false);
-        }
         // 日志打印
         Logger.init().methodCount(10).logAdapter(new FileLogAdapter(this));
         Timber.plant(new Timber.DebugTree() {

@@ -12,6 +12,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
@@ -27,12 +29,19 @@ public abstract class BaseFragment extends Fragment implements
     private DialogManager mDialogManager;
     private FragmentHelper mFragmentHelper;
     private Config mConfig = new Config();
+    private Unbinder mUnbinder;
 
     public static class Config {
         private boolean isEventBusEnable = false;
+        private boolean isButterKnifeBind = true;
 
         public Config setEventBusEnable(boolean eventBusEnable) {
             isEventBusEnable = eventBusEnable;
+            return this;
+        }
+
+        public Config setButterKnifeBind(boolean butterKnifeBind) {
+            isButterKnifeBind = butterKnifeBind;
             return this;
         }
 
@@ -177,7 +186,11 @@ public abstract class BaseFragment extends Fragment implements
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(getContentViewLayoutId(), null);
+        View view = inflater.inflate(getContentViewLayoutId(), null);
+        if (mConfig.isButterKnifeBind) {
+            mUnbinder = ButterKnife.bind(view);
+        }
+        return view;
     }
 
     protected abstract int getContentViewLayoutId();
@@ -223,5 +236,13 @@ public abstract class BaseFragment extends Fragment implements
 
         });
 
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mUnbinder != null) {
+            this.mUnbinder.unbind();
+        }
+        super.onDestroy();
     }
 }

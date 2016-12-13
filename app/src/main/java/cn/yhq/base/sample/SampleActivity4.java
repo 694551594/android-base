@@ -85,7 +85,7 @@ public class SampleActivity4 extends BaseActivity {
                     } else {
                         radioGroup.clearCheck();
                     }
-                    viewHolder.bindTextData(R.id.textView, entity);
+                    viewHolder.setText(R.id.textView, entity);
                 }
 
                 @Override

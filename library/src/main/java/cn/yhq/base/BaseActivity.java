@@ -20,6 +20,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
@@ -44,11 +46,18 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private FragmentHelper mFragmentHelper;
     private Config mConfig = new Config();
     private SwipeBackActivityHelper mSwipeBackActivityHelper;
+    private Unbinder mUnbinder;
 
     public static class Config {
         private boolean isToolbarWrapper = true;
         private boolean isSwipeBackWrapper = true;
         private boolean isEventBusEnable = false;
+        private boolean isButterKnifeBind = true;
+
+        public Config setButterKnifeBind(boolean butterKnifeBind) {
+            isButterKnifeBind = butterKnifeBind;
+            return this;
+        }
 
         public Config setToolbarWrapper(boolean toolbarWrapper) {
             isToolbarWrapper = toolbarWrapper;
@@ -79,6 +88,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
             mSwipeBackActivityHelper.onActivityCreate();
         }
         this.setContentView(getContentViewLayoutId());
+        if (mConfig.isButterKnifeBind) {
+            mUnbinder = ButterKnife.bind(this);
+        }
         this.mActivityManager = ActivityManager.getInstance();
         this.mActivityManager.addActivity(this);
         this.mDialogManager = new DialogManager(this);
@@ -336,6 +348,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
+        if (mUnbinder != null) {
+            this.mUnbinder.unbind();
+        }
         this.mActivityManager.removeActivity(this);
         super.onDestroy();
     }

@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.f2prateek.dart.Dart;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -18,6 +20,7 @@ import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
 import cn.yhq.fragment.FragmentHelper;
+import icepick.Icepick;
 
 /**
  * Created by Yanghuiqiang on 2016/10/25.
@@ -34,6 +37,13 @@ public abstract class BaseFragment extends Fragment implements
     public static class Config {
         private boolean isEventBusEnable = false;
         private boolean isButterKnifeBind = true;
+        private boolean isStateInject = false;
+        private boolean isDartInject = false;
+
+        public Config setDartInject(boolean dartInject) {
+            this.isDartInject = dartInject;
+            return this;
+        }
 
         public Config setEventBusEnable(boolean eventBusEnable) {
             isEventBusEnable = eventBusEnable;
@@ -42,6 +52,11 @@ public abstract class BaseFragment extends Fragment implements
 
         public Config setButterKnifeBind(boolean butterKnifeBind) {
             isButterKnifeBind = butterKnifeBind;
+            return this;
+        }
+
+        public Config setStateInject(boolean stateInject) {
+            this.isStateInject = stateInject;
             return this;
         }
 
@@ -59,10 +74,18 @@ public abstract class BaseFragment extends Fragment implements
 
         this.mDialogManager = new DialogManager(this);
 
+        if (mConfig.isStateInject) {
+            Icepick.restoreInstanceState(this, savedInstanceState);
+        }
+
         if (savedInstanceState != null) {
             if (mFragmentHelper != null) {
                 mFragmentHelper.restoreInstanceState(savedInstanceState);
             }
+        }
+
+        if (mConfig.isDartInject) {
+            Dart.inject(this, this.getArguments());
         }
     }
 
@@ -158,6 +181,9 @@ public abstract class BaseFragment extends Fragment implements
         super.onSaveInstanceState(outState);
         if (mFragmentHelper != null) {
             mFragmentHelper.saveInstanceState(outState);
+        }
+        if (mConfig.isStateInject) {
+            Icepick.saveInstanceState(this, outState);
         }
     }
 

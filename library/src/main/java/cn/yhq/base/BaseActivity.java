@@ -14,7 +14,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.f2prateek.dart.Dart;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,6 +30,7 @@ import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
 import cn.yhq.fragment.FragmentHelper;
+import icepick.Icepick;
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 import me.imid.swipebacklayout.lib.Utils;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivityBase;
@@ -53,6 +58,14 @@ public abstract class BaseActivity extends AppCompatActivity implements
         private boolean isSwipeBackWrapper = true;
         private boolean isEventBusEnable = false;
         private boolean isButterKnifeBind = true;
+        private boolean isFullScreen = false;
+        private boolean isStateInject = false;
+        private boolean isDartInject = false;
+
+        public Config setDartInject(boolean dartInject) {
+            this.isDartInject = dartInject;
+            return this;
+        }
 
         public Config setButterKnifeBind(boolean butterKnifeBind) {
             isButterKnifeBind = butterKnifeBind;
@@ -73,6 +86,16 @@ public abstract class BaseActivity extends AppCompatActivity implements
             isSwipeBackWrapper = swipeBackWrapper;
             return this;
         }
+
+        public Config setFullScreen(boolean fullScreen) {
+            isFullScreen = fullScreen;
+            return this;
+        }
+
+        public Config setStateInject(boolean stateInject) {
+            this.isStateInject = stateInject;
+            return this;
+        }
     }
 
     protected void onConfig(Config config) {
@@ -81,8 +104,16 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         this.onConfig(mConfig);
+
+        if (mConfig.isFullScreen) {
+            this.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);// 去掉信息栏
+        }
+
+        super.onCreate(savedInstanceState);
+
         if (mConfig.isSwipeBackWrapper) {
             mSwipeBackActivityHelper = new SwipeBackActivityHelper(this);
             mSwipeBackActivityHelper.onActivityCreate();
@@ -96,10 +127,18 @@ public abstract class BaseActivity extends AppCompatActivity implements
         this.mDialogManager = new DialogManager(this);
         this.onViewCreated(savedInstanceState);
 
+        if (mConfig.isStateInject) {
+            Icepick.restoreInstanceState(this, savedInstanceState);
+        }
+
         if (savedInstanceState != null) {
             if (mFragmentHelper != null) {
                 mFragmentHelper.restoreInstanceState(savedInstanceState);
             }
+        }
+
+        if (mConfig.isDartInject) {
+            Dart.inject(this);
         }
 
     }
@@ -239,6 +278,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         if (mFragmentHelper != null) {
             mFragmentHelper.saveInstanceState(outState);
+        }
+        if (mConfig.isStateInject) {
+            Icepick.saveInstanceState(this, outState);
         }
     }
 

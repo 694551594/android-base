@@ -16,12 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-/**
- * @创建者 CSDN_LQR
- * @描述 源码来自开源项目https://github.com/dss886/Android-EmotionInputDetector
- * <p>
- * 本人只做部分修改（增加多表情按钮监按及回调，轻松实现仿微信效果）
- */
+
 public class EmotionKeyboard {
 
     private static final String SHARE_PREFERENCE_NAME = "EmotionKeyboard";

@@ -114,6 +114,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
         super.onCreate(savedInstanceState);
 
+        if (mConfig.isDartInject) {
+            Dart.inject(this);
+        }
+
         if (mConfig.isSwipeBackWrapper) {
             mSwipeBackActivityHelper = new SwipeBackActivityHelper(this);
             mSwipeBackActivityHelper.onActivityCreate();
@@ -135,10 +139,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
             if (mFragmentHelper != null) {
                 mFragmentHelper.restoreInstanceState(savedInstanceState);
             }
-        }
-
-        if (mConfig.isDartInject) {
-            Dart.inject(this);
         }
 
     }

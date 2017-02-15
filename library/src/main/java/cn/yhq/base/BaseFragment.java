@@ -214,7 +214,7 @@ public abstract class BaseFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getContentViewLayoutId(), null);
         if (mConfig.isButterKnifeBind) {
-            mUnbinder = ButterKnife.bind(view);
+            mUnbinder = ButterKnife.bind(this, view);
         }
         return view;
     }

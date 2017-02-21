@@ -197,7 +197,7 @@ public abstract class BaseFragment extends Fragment implements
 
     }
 
-    protected boolean onBackPressedFragment() {
+    public boolean onBackPressedFragment() {
         if (this.mFragmentHelper != null) {
             FragmentHelper.TabInfo tabInfo = this.mFragmentHelper.getLastTabInfo();
             if (tabInfo != null && tabInfo.getFragment() instanceof BaseFragment) {

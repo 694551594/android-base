@@ -1,5 +1,6 @@
 package cn.yhq.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -270,5 +271,28 @@ public abstract class BaseFragment extends Fragment implements
             this.mUnbinder.unbind();
         }
         super.onDestroyView();
+    }
+
+    public void startActivityForResult(Class<?> activity, Bundle bundle, int requestCode) {
+        Intent intent = createIntent(activity);
+        startActivityForResult(intent, requestCode, bundle);
+    }
+
+    public void startActivityForResult(Class<?> activity, int requestCode) {
+        startActivityForResult(activity, null, requestCode);
+    }
+
+    public void startActivity(Class<?> activity, Bundle bundle) {
+        Intent intent = createIntent(activity);
+        startActivity(intent, bundle);
+    }
+
+    public void startActivity(Class<?> activity) {
+        startActivity(activity, null);
+    }
+
+    public Intent createIntent(Class<?> activity) {
+        Intent intent = new Intent(getActivity(), activity);
+        return intent;
     }
 }

@@ -295,4 +295,8 @@ public abstract class BaseFragment extends Fragment implements
         Intent intent = new Intent(getActivity(), activity);
         return intent;
     }
+
+    public <T extends View> T inflateView(int resId) {
+        return (T) View.inflate(getContext(), resId, null);
+    }
 }

@@ -508,4 +508,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     }
 
+    public <T extends View> T inflateView(int resId) {
+        return (T) View.inflate(getContext(), resId, null);
+    }
+
 }

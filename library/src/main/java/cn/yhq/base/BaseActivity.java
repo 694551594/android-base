@@ -59,7 +59,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         private boolean isEventBusEnable = false;
         private boolean isButterKnifeBind = true;
         private boolean isFullScreen = false;
-        private boolean isStateInject = false;
         private boolean isDartInject = false;
 
         public Config setDartInject(boolean dartInject) {
@@ -92,10 +91,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
             return this;
         }
 
-        public Config setStateInject(boolean stateInject) {
-            this.isStateInject = stateInject;
-            return this;
-        }
     }
 
     protected void onConfig(Config config) {
@@ -130,10 +125,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         this.mActivityManager.addActivity(this);
         this.mDialogManager = new DialogManager(this);
         this.onViewCreated(savedInstanceState);
-
-        if (mConfig.isStateInject) {
-            Icepick.restoreInstanceState(this, savedInstanceState);
-        }
 
         if (savedInstanceState != null) {
             if (mFragmentHelper != null) {
@@ -278,9 +269,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         if (mFragmentHelper != null) {
             mFragmentHelper.saveInstanceState(outState);
-        }
-        if (mConfig.isStateInject) {
-            Icepick.saveInstanceState(this, outState);
         }
     }
 

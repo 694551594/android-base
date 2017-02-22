@@ -38,7 +38,6 @@ public abstract class BaseFragment extends Fragment implements
     public static class Config {
         private boolean isEventBusEnable = false;
         private boolean isButterKnifeBind = true;
-        private boolean isStateInject = false;
         private boolean isDartInject = false;
 
         public Config setDartInject(boolean dartInject) {
@@ -56,11 +55,6 @@ public abstract class BaseFragment extends Fragment implements
             return this;
         }
 
-        public Config setStateInject(boolean stateInject) {
-            this.isStateInject = stateInject;
-            return this;
-        }
-
     }
 
     protected void onConfig(Config config) {
@@ -74,10 +68,6 @@ public abstract class BaseFragment extends Fragment implements
         onConfig(mConfig);
 
         this.mDialogManager = new DialogManager(this);
-
-        if (mConfig.isStateInject) {
-            Icepick.restoreInstanceState(this, savedInstanceState);
-        }
 
         if (savedInstanceState != null) {
             if (mFragmentHelper != null) {
@@ -182,9 +172,6 @@ public abstract class BaseFragment extends Fragment implements
         super.onSaveInstanceState(outState);
         if (mFragmentHelper != null) {
             mFragmentHelper.saveInstanceState(outState);
-        }
-        if (mConfig.isStateInject) {
-            Icepick.saveInstanceState(this, outState);
         }
     }
 

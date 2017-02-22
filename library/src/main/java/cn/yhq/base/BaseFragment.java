@@ -21,7 +21,6 @@ import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
 import cn.yhq.fragment.FragmentHelper;
-import icepick.Icepick;
 
 /**
  * Created by Yanghuiqiang on 2016/10/25.

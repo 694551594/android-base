@@ -63,7 +63,7 @@ public final class ActivityManager {
     /**
      * 结束当前Activity（堆栈中最后一个压入的）
      */
-    public void finishActivity() {
+    public void finishCurrentActivity() {
         Activity activity = activityStack.lastElement();
         finishActivity(activity);
     }
@@ -73,16 +73,7 @@ public final class ActivityManager {
      */
     public void finishActivity(Activity activity) {
         if (activity != null && activityStack.contains(activity)) {
-            activityStack.remove(activity);
             activity.finish();
-        }
-    }
-
-    /**
-     * 结束指定的Activity
-     */
-    public void removeActivity(Activity activity) {
-        if (activity != null && activityStack.contains(activity)) {
             activityStack.remove(activity);
         }
     }
@@ -104,11 +95,17 @@ public final class ActivityManager {
      */
     public void finishAllActivity() {
         for (int i = 0, size = activityStack.size(); i < size; i++) {
-            if (null != activityStack.get(i)) {
-                finishActivity(activityStack.get(i));
+            Activity activity = activityStack.get(i);
+            if (null != activity) {
+                activity.finish();
             }
         }
         activityStack.clear();
     }
 
+    public void removeActivity(Activity activity) {
+        if (activity != null && activityStack.contains(activity)) {
+            activityStack.remove(activity);
+        }
+    }
 }

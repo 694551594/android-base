@@ -18,7 +18,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.f2prateek.dart.Dart;
+import com.youngfeng.snake.Snake;
+import com.youngfeng.snake.annotations.EnableDragToClose;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -30,45 +31,30 @@ import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
 import cn.yhq.fragment.FragmentHelper;
-import me.imid.swipebacklayout.lib.SwipeBackLayout;
-import me.imid.swipebacklayout.lib.Utils;
-import me.imid.swipebacklayout.lib.app.SwipeBackActivityBase;
-import me.imid.swipebacklayout.lib.app.SwipeBackActivityHelper;
+import dart.Dart;
+import icepick.Icepick;
 
 /**
  * Created by Yanghuiqiang on 2016/10/25.
  */
 
+@EnableDragToClose()
 public abstract class BaseActivity extends AppCompatActivity implements
         IDialogCreator,
-        FragmentHelper.OnFragmentChangeListener,
-        SwipeBackActivityBase {
+        FragmentHelper.OnFragmentChangeListener {
     private DialogManager mDialogManager;
     private ActivityManager mActivityManager;
     private ToolbarManager mToolbarManager;
     private Toolbar mToolbar;
     private FragmentHelper mFragmentHelper;
     private Config mConfig = new Config();
-    private SwipeBackActivityHelper mSwipeBackActivityHelper;
-    private Unbinder mUnbinder;
+    private Unbinder unbinder;
 
     public static class Config {
         private boolean isToolbarWrapper = true;
         private boolean isSwipeBackWrapper = true;
         private boolean isEventBusEnable = false;
-        private boolean isButterKnifeBind = true;
         private boolean isFullScreen = false;
-        private boolean isDartInject = false;
-
-        public Config setDartInject(boolean dartInject) {
-            this.isDartInject = dartInject;
-            return this;
-        }
-
-        public Config setButterKnifeBind(boolean butterKnifeBind) {
-            isButterKnifeBind = butterKnifeBind;
-            return this;
-        }
 
         public Config setToolbarWrapper(boolean toolbarWrapper) {
             isToolbarWrapper = toolbarWrapper;
@@ -108,27 +94,25 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
         super.onCreate(savedInstanceState);
 
-        if (mConfig.isDartInject) {
-            Dart.inject(this);
-        }
-
         if (mConfig.isSwipeBackWrapper) {
-            mSwipeBackActivityHelper = new SwipeBackActivityHelper(this);
-            mSwipeBackActivityHelper.onActivityCreate();
+            Snake.host(this);
         }
         this.setContentView(getContentViewLayoutId());
-        if (mConfig.isButterKnifeBind) {
-            mUnbinder = ButterKnife.bind(this);
-        }
+
         this.mActivityManager = ActivityManager.getInstance();
         this.mActivityManager.addActivity(this);
         this.mDialogManager = new DialogManager(this);
         this.onViewCreated(savedInstanceState);
 
+        unbinder = ButterKnife.bind(this);
+
+        Dart.bind(this);
+
         if (savedInstanceState != null) {
             if (mFragmentHelper != null) {
                 mFragmentHelper.restoreInstanceState(savedInstanceState);
             }
+            Icepick.restoreInstanceState(this, savedInstanceState);
         }
 
     }
@@ -188,45 +172,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (mSwipeBackActivityHelper != null) {
-            mSwipeBackActivityHelper.onPostCreate();
-        }
-    }
-
-    @Override
-    public View findViewById(int id) {
-        View v = super.findViewById(id);
-        if (v == null && mSwipeBackActivityHelper != null)
-            return mSwipeBackActivityHelper.findViewById(id);
-        return v;
-    }
-
-    @Override
-    public SwipeBackLayout getSwipeBackLayout() {
-        if (mSwipeBackActivityHelper != null) {
-            return mSwipeBackActivityHelper.getSwipeBackLayout();
-        }
-        return null;
-    }
-
-    @Override
-    public void setSwipeBackEnable(boolean enable) {
-        if (mSwipeBackActivityHelper != null) {
-            getSwipeBackLayout().setEnableGesture(enable);
-        }
-    }
-
-    @Override
-    public void scrollToFinishActivity() {
-        if (mSwipeBackActivityHelper != null) {
-            Utils.convertActivityToTranslucent(this);
-            getSwipeBackLayout().scrollToFinishActivity();
-        }
-    }
-
     public <T extends View> T getView(int id) {
         return (T) this.findViewById(id);
     }
@@ -257,10 +202,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public <T extends Fragment> T getLastFragment() {
-        if (mFragmentHelper.getLastTabInfo() == null) {
+        if (mFragmentHelper.getLastFragmentInfo() == null) {
             return null;
         }
-        return (T) mFragmentHelper.getLastTabInfo().getFragment();
+        return (T) mFragmentHelper.getLastFragmentInfo().getFragment();
     }
 
     @Override
@@ -269,6 +214,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         if (mFragmentHelper != null) {
             mFragmentHelper.saveInstanceState(outState);
         }
+        Icepick.saveInstanceState(this, outState);
     }
 
     public FragmentHelper getFragmentHelper() {
@@ -276,7 +222,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFragmentChanged(FragmentHelper.TabInfo tabInfo) {
+    public void onFragmentChanged(FragmentHelper.FragmentInfo fragmentInfo) {
 
     }
 
@@ -306,9 +252,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     protected boolean onBackPressedFragment() {
         if (this.mFragmentHelper != null) {
-            FragmentHelper.TabInfo tabInfo = this.mFragmentHelper.getLastTabInfo();
-            if (tabInfo != null && tabInfo.getFragment() instanceof BaseFragment) {
-                BaseFragment baseFragment = (BaseFragment) tabInfo.getFragment();
+            FragmentHelper.FragmentInfo fragmentInfo = this.mFragmentHelper.getLastFragmentInfo();
+            if (fragmentInfo != null && fragmentInfo.getFragment() instanceof BaseFragment) {
+                BaseFragment baseFragment = (BaseFragment) fragmentInfo.getFragment();
                 if (!baseFragment.onBackPressedFragment()) {
                     return false;
                 }
@@ -377,10 +323,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
-        if (mUnbinder != null) {
-            this.mUnbinder.unbind();
-        }
         this.mActivityManager.removeActivity(this);
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
         super.onDestroy();
     }
 

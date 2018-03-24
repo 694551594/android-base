@@ -24,7 +24,6 @@ public class MainActivity extends BaseActivity {
         super.onConfig(config);
         config.setSwipeBackWrapper(false);
         config.setEventBusEnable(true);
-        config.setButterKnifeBind(true);
     }
 
     @OnClick({R2.id.button1, R2.id.button2, R2.id.button3, R2.id.button4})

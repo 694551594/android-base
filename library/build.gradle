@@ -1,22 +1,21 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
-apply plugin: 'com.jakewharton.butterknife'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
-    minSdkVersion 14
-    targetSdkVersion 25
+        minSdkVersion 14
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-		
-	javaCompileOptions {
+
+        javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [ eventBusIndex : 'org.greenrobot.eventbusperf.MyEventBusIndex' ]
+                arguments = [eventBusIndex: 'org.greenrobot.eventbusperf.MyEventBusIndex']
             }
         }
     }
@@ -29,40 +28,44 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    testCompile 'junit:junit:4.12'
-    compile ('me.imid.swipebacklayout.lib:library:1.0.0') {
-        exclude group:'com.android.support', module:'support-v4'
-    }
-    compile 'com.jakewharton.timber:timber:4.3.1'
-    compile 'com.orhanobut:logger:1.15'
-    compile 'cn.yhq:android-dialog:1.6.0'
-    compile 'cn.yhq:android-validate:2.0.0'
-    compile 'cn.yhq:android-fragment-helper:1.1.0'
-	annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.0.1'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'cat.ereza:customactivityoncrash:1.2.0'
+    testImplementation 'junit:junit:4.12'
 
-    compile 'com.jakewharton:butterknife:8.4.0'
-    // annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    // logger
+    compile 'com.jakewharton.timber:timber:4.6.1'
+    compile 'com.orhanobut:logger:2.1.1'
 
-    compile 'com.f2prateek.dart:dart:2.0.1'
-    // provided 'com.f2prateek.dart:dart-processor:2.0.1'
-    compile 'com.f2prateek.dart:henson:2.0.1'
-    // provided 'com.f2prateek.dart:henson-processor:2.0.1'
-    // compile 'frankiesardo:icepick:3.2.0'
-    // provided 'frankiesardo:icepick-processor:3.2.0'
+    compile 'cat.ereza:customactivityoncrash:2.2.0'
+
+    compile 'cn.yhq:android-dialog:2.0.0'
+    compile 'cn.yhq:android-validate:2.1.0'
+    compile 'cn.yhq:android-fragment-helper:1.2.0'
+    // eventbus
+    annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.0.1'
+    implementation 'org.greenrobot:eventbus:3.0.0'
+
+    implementation 'com.jakewharton:butterknife:8.4.0'
+
+    compile 'com.f2prateek.dart:dart:3.0.0-RC5'
+    annotationProcessor 'com.f2prateek.dart:dart-processor:3.0.0-RC5'
+    compile 'com.f2prateek.dart:henson:3.0.0-RC5'
+    annotationProcessor 'com.f2prateek.dart:henson-processor:3.0.0-RC5'
+    compile 'frankiesardo:icepick:3.2.0'
+    annotationProcessor 'frankiesardo:icepick-processor:3.2.0'
+    // 侧滑返回
+    compile 'com.youngfeng.android:snake:0.3.1'
+    annotationProcessor 'com.youngfeng.android:snake-compiler:0.3.0'
 }
 
 publish {
     userOrg = '694551594'
     groupId = 'cn.yhq'
     artifactId = 'android-base'
-    publishVersion = '1.7.0'
+    publishVersion = '2.0.0'
     desc = 'android-BaseActivity、BaseFragment'
     website = 'https://github.com/694551594/android-base'
 }

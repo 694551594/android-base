@@ -9,14 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.f2prateek.dart.Dart;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
@@ -32,25 +28,12 @@ public abstract class BaseFragment extends Fragment implements
     private DialogManager mDialogManager;
     private FragmentHelper mFragmentHelper;
     private Config mConfig = new Config();
-    private Unbinder mUnbinder;
 
     public static class Config {
         private boolean isEventBusEnable = false;
-        private boolean isButterKnifeBind = true;
-        private boolean isDartInject = false;
-
-        public Config setDartInject(boolean dartInject) {
-            this.isDartInject = dartInject;
-            return this;
-        }
 
         public Config setEventBusEnable(boolean eventBusEnable) {
             isEventBusEnable = eventBusEnable;
-            return this;
-        }
-
-        public Config setButterKnifeBind(boolean butterKnifeBind) {
-            isButterKnifeBind = butterKnifeBind;
             return this;
         }
 
@@ -74,9 +57,6 @@ public abstract class BaseFragment extends Fragment implements
             }
         }
 
-        if (mConfig.isDartInject) {
-            Dart.inject(this, this.getArguments());
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -160,10 +140,10 @@ public abstract class BaseFragment extends Fragment implements
     }
 
     public <T extends Fragment> T getLastFragment() {
-        if (mFragmentHelper.getLastTabInfo() == null) {
+        if (mFragmentHelper.getLastFragmentInfo() == null) {
             return null;
         }
-        return (T) mFragmentHelper.getLastTabInfo().getFragment();
+        return (T) mFragmentHelper.getLastFragmentInfo().getFragment();
     }
 
     @Override
@@ -179,15 +159,15 @@ public abstract class BaseFragment extends Fragment implements
     }
 
     @Override
-    public void onFragmentChanged(FragmentHelper.TabInfo tabInfo) {
+    public void onFragmentChanged(FragmentHelper.FragmentInfo fragmentInfo) {
 
     }
 
     public boolean onBackPressedFragment() {
         if (this.mFragmentHelper != null) {
-            FragmentHelper.TabInfo tabInfo = this.mFragmentHelper.getLastTabInfo();
-            if (tabInfo != null && tabInfo.getFragment() instanceof BaseFragment) {
-                BaseFragment baseFragment = (BaseFragment) tabInfo.getFragment();
+            FragmentHelper.FragmentInfo fragmentInfo = this.mFragmentHelper.getLastFragmentInfo();
+            if (fragmentInfo != null && fragmentInfo.getFragment() instanceof BaseFragment) {
+                BaseFragment baseFragment = (BaseFragment) fragmentInfo.getFragment();
                 if (!baseFragment.onBackPressedFragment()) {
                     return false;
                 }
@@ -200,9 +180,6 @@ public abstract class BaseFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getContentViewLayoutId(), null);
-        if (mConfig.isButterKnifeBind) {
-            mUnbinder = ButterKnife.bind(this, view);
-        }
         return view;
     }
 
@@ -253,9 +230,6 @@ public abstract class BaseFragment extends Fragment implements
 
     @Override
     public void onDestroyView() {
-        if (mUnbinder != null) {
-            this.mUnbinder.unbind();
-        }
         super.onDestroyView();
     }
 

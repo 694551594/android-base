@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.f2prateek.dart.Dart;
 import com.youngfeng.snake.Snake;
 import com.youngfeng.snake.annotations.EnableDragToClose;
 
@@ -31,7 +32,6 @@ import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
 import cn.yhq.fragment.FragmentHelper;
-import dart.Dart;
 import icepick.Icepick;
 
 /**
@@ -106,7 +106,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
         unbinder = ButterKnife.bind(this);
 
-        Dart.bind(this);
+        Dart.inject(this);
 
         if (savedInstanceState != null) {
             if (mFragmentHelper != null) {

@@ -50,10 +50,10 @@ dependencies {
 
     implementation 'com.jakewharton:butterknife:8.4.0'
 
-    compile 'com.f2prateek.dart:dart:3.0.0-RC5'
-    annotationProcessor 'com.f2prateek.dart:dart-processor:3.0.0-RC5'
-    compile 'com.f2prateek.dart:henson:3.0.0-RC5'
-    annotationProcessor 'com.f2prateek.dart:henson-processor:3.0.0-RC5'
+    compile 'com.f2prateek.dart.migration:dart:2.1.0'
+    annotationProcessor 'com.f2prateek.dart.migration:dart-processor:2.1.0'
+    compile 'com.f2prateek.dart.migration:henson:2.1.0'
+    annotationProcessor 'com.f2prateek.dart.migration:henson-processor:2.1.0'
     compile 'frankiesardo:icepick:3.2.0'
     annotationProcessor 'frankiesardo:icepick-processor:3.2.0'
     // 侧滑返回

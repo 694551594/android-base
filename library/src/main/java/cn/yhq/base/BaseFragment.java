@@ -2,6 +2,7 @@ package cn.yhq.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import cn.yhq.dialog.core.DialogManager;
 import cn.yhq.dialog.core.IDialog;
 import cn.yhq.dialog.core.IDialogCreator;
@@ -28,6 +31,7 @@ public abstract class BaseFragment extends Fragment implements
     private DialogManager mDialogManager;
     private FragmentHelper mFragmentHelper;
     private Config mConfig = new Config();
+    private Unbinder unbinder;
 
     public static class Config {
         private boolean isEventBusEnable = false;
@@ -41,6 +45,12 @@ public abstract class BaseFragment extends Fragment implements
 
     protected void onConfig(Config config) {
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        unbinder = ButterKnife.bind(this, view);
     }
 
     @Override
@@ -231,6 +241,9 @@ public abstract class BaseFragment extends Fragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
     }
 
     public void startActivityForResult(Class<?> activity, Bundle bundle, int requestCode) {

@@ -102,11 +102,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
         this.mActivityManager = ActivityManager.getInstance();
         this.mActivityManager.addActivity(this);
         this.mDialogManager = new DialogManager(this);
-        this.onViewCreated(savedInstanceState);
 
         unbinder = ButterKnife.bind(this);
-
         Dart.inject(this);
+
+        this.onViewCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
             if (mFragmentHelper != null) {

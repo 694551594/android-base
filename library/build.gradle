@@ -65,7 +65,7 @@ publish {
     userOrg = '694551594'
     groupId = 'cn.yhq'
     artifactId = 'android-base'
-    publishVersion = '2.0.0'
+    publishVersion = '2.0.1'
     desc = 'android-BaseActivity、BaseFragment'
     website = 'https://github.com/694551594/android-base'
 }
